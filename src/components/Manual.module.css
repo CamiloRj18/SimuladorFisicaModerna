@@ -90,3 +90,9 @@
   color: var(--text-primary);
   font-weight: 600;
 }
+
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+}

@@ -294,7 +294,7 @@ export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transiti
       ref={canvasRef}
       width={480}
       height={360}
-      style={{ width: '100%', maxWidth: 480, borderRadius: 6, border: '1px solid var(--border-color)' }}
+      style={{ width: '100%', maxWidth: 480, height: 'auto', borderRadius: 6, border: '1px solid var(--border-color)' }}
     />
   );
 }

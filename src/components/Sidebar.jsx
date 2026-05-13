@@ -1,11 +1,11 @@
 import styles from './Sidebar.module.css';
 
 const MODULES = [
-  { id: 'compton',   label: 'Efecto Compton',         sub: 'Dispersión de fotones' },
-  { id: 'debroglie', label: 'Hipótesis de De Broglie', sub: 'Dualidad onda-partícula' },
-  { id: 'hidrogeno', label: 'Series del Hidrógeno',    sub: 'Espectros atómicos' },
-  { id: 'moseley',   label: 'Ley de Moseley',          sub: 'Rayos X característicos' },
-  { id: 'manual',    label: 'Manual de uso',            sub: 'Guía de referencia' },
+  { id: 'compton',   label: 'Efecto Compton',          shortLabel: 'Compton',    sub: 'Dispersión de fotones' },
+  { id: 'debroglie', label: 'Hipótesis de De Broglie',  shortLabel: 'De Broglie', sub: 'Dualidad onda-partícula' },
+  { id: 'hidrogeno', label: 'Series del Hidrógeno',     shortLabel: 'Hidrógeno',  sub: 'Espectros atómicos' },
+  { id: 'moseley',   label: 'Ley de Moseley',           shortLabel: 'Moseley',    sub: 'Rayos X característicos' },
+  { id: 'manual',    label: 'Manual de uso',             shortLabel: 'Manual',     sub: 'Guía de referencia' },
 ];
 
 export default function Sidebar({ active, onSelect }) {
@@ -24,6 +24,7 @@ export default function Sidebar({ active, onSelect }) {
             onClick={() => onSelect(mod.id)}
           >
             <span className={styles.navLabel}>{mod.label}</span>
+            <span className={styles.navShort}>{mod.shortLabel}</span>
             <span className={styles.navSub}>{mod.sub}</span>
           </div>
         ))}

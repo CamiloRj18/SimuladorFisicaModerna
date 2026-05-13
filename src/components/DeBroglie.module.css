@@ -91,3 +91,17 @@
   transform: scale(1.05);
   box-shadow: 0 0 10px rgba(124, 58, 237, 0.28);
 }
+
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+  .right {
+    width: 100%;
+  }
+
+  .particleSelector {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

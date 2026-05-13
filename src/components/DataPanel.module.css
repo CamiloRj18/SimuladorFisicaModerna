@@ -63,3 +63,13 @@
 .flash {
   animation: valueFlash 0.28s ease-out;
 }
+
+@media (max-width: 768px) {
+  .rowLabel {
+    font-size: 11px;
+  }
+
+  .rowValue {
+    font-size: 12px;
+  }
+}

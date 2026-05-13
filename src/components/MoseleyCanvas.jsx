@@ -309,7 +309,7 @@ export default function MoseleyCanvas({ elementIndex, selectedElement }) {
       ref={canvasRef}
       width={520}
       height={310}
-      style={{ width: '100%', maxWidth: 520, borderRadius: 6, border: '1px solid var(--border-color)' }}
+      style={{ width: '100%', maxWidth: 520, height: 'auto', borderRadius: 6, border: '1px solid var(--border-color)' }}
     />
   );
 }

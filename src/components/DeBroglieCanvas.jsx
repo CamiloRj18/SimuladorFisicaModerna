@@ -192,7 +192,7 @@ export default function DeBroglieCanvas({ beta, lambda_pm, particleLabel }) {
       ref={canvasRef}
       width={500}
       height={260}
-      style={{ width: '100%', maxWidth: 500, borderRadius: 6, border: '1px solid var(--border-color)' }}
+      style={{ width: '100%', maxWidth: 500, height: 'auto', borderRadius: 6, border: '1px solid var(--border-color)' }}
     />
   );
 }
