@@ -1,0 +1,33 @@
+:root {
+  /* Fondos */
+  --bg-main:      #0a0e1a;
+  --bg-card:      #0d1420;
+  --bg-secondary: #111827;
+  --bg-hover:     #1a2235;
+
+  /* Colores de acento */
+  --color-primary: #4a9eff;
+  --color-cyan:    #00d4ff;
+  --color-purple:  #7c3aed;
+  --color-gold:    #f59e0b;
+  --color-green:   #10b981;
+  --color-red:     #ef4444;
+
+  /* Texto */
+  --text-primary:   #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-tertiary:  #4a5568;
+
+  /* Bordes */
+  --border-color:   #1e2d42;
+  --border-active:  #2a3f5f;
+
+  /* Tipografía */
+  --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Espaciado */
+  --sidebar-width: 220px;
+  --panel-padding: 20px;
+  --border-radius: 6px;
+}

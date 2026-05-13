@@ -1,0 +1,87 @@
+.container {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 20px;
+  align-items: start;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.canvasWrap {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 16px;
+}
+
+.controls {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.controlHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.controlLabel {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.controlValue {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-gold);
+  font-family: var(--font-mono);
+}
+
+.elementGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.elemBtn {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 8px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  transition: background 0.1s, border-color 0.1s, color 0.1s;
+}
+
+.elemBtn:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-active);
+}
+
+.elemBtn.active {
+  background: rgba(245,158,11,0.22);
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+  transform: scale(1.08);
+  box-shadow: 0 0 9px rgba(245,158,11,0.3);
+}
