@@ -5,6 +5,7 @@ const MODULES = [
   { id: 'debroglie', label: 'Hipótesis de De Broglie', sub: 'Dualidad onda-partícula' },
   { id: 'hidrogeno', label: 'Series del Hidrógeno',    sub: 'Espectros atómicos' },
   { id: 'moseley',   label: 'Ley de Moseley',          sub: 'Rayos X característicos' },
+  { id: 'manual',    label: 'Manual de uso',            sub: 'Guía de referencia' },
 ];
 
 export default function Sidebar({ active, onSelect }) {

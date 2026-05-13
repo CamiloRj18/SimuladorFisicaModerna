@@ -4,16 +4,18 @@ import Compton from './components/Compton.jsx';
 import DeBroglie from './components/DeBroglie.jsx';
 import Hidrogeno from './components/Hidrogeno.jsx';
 import Moseley from './components/Moseley.jsx';
+import Manual from './components/Manual.jsx';
 import styles from './components/Layout.module.css';
 
 const MODULE_META = {
-  compton:   { title: 'Efecto Compton',              subtitle: 'Dispersión de fotones por electrones — A.H. Compton, 1923' },
-  debroglie: { title: 'Hipótesis de De Broglie',     subtitle: 'Dualidad onda-partícula del momento relativista — L. de Broglie, 1924' },
+  compton:   { title: 'Efecto Compton',                   subtitle: 'Dispersión de fotones por electrones — A.H. Compton, 1923' },
+  debroglie: { title: 'Hipótesis de De Broglie',          subtitle: 'Dualidad onda-partícula del momento relativista — L. de Broglie, 1924' },
   hidrogeno: { title: 'Series Espectrales del Hidrógeno', subtitle: 'Transiciones electrónicas y fórmula de Rydberg — N. Bohr, 1913' },
-  moseley:   { title: 'Ley de Moseley — Rayos X',    subtitle: 'Frecuencia de rayos X característicos vs. número atómico — H.G.J. Moseley, 1913' },
+  moseley:   { title: 'Ley de Moseley — Rayos X',         subtitle: 'Frecuencia de rayos X característicos vs. número atómico — H.G.J. Moseley, 1913' },
+  manual:    { title: 'Manual de uso',                    subtitle: 'Guía de referencia para todos los módulos del simulador' },
 };
 
-const MODULES = { compton: Compton, debroglie: DeBroglie, hidrogeno: Hidrogeno, moseley: Moseley };
+const MODULES = { compton: Compton, debroglie: DeBroglie, hidrogeno: Hidrogeno, moseley: Moseley, manual: Manual };
 
 export default function App() {
   const [active, setActive] = useState('compton');

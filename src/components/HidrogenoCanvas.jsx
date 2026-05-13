@@ -7,6 +7,40 @@ const SERIES_COLORS = {
   paschen: '#f59e0b',
 };
 
+const MARGIN_TOP = 20;
+const MARGIN_BOTTOM = 30;
+const E_MIN = -14;
+const E_MAX = 0.5;
+const MIN_SPACING = 42;
+
+function computeLevelYPositions(H) {
+  const chartH = H - MARGIN_TOP - MARGIN_BOTTOM;
+  const linearY = (eV) => {
+    const t = (eV - E_MIN) / (E_MAX - E_MIN);
+    return MARGIN_TOP + chartH * (1 - t);
+  };
+
+  // Compute linear positions then enforce minimum spacing top-down
+  const levels = ENERGY_LEVELS.map(l => ({ n: l.n, energy_eV: l.energy_eV, y: linearY(l.energy_eV) }));
+  levels.sort((a, b) => a.y - b.y); // ascending Y = top of chart first (high energy)
+
+  for (let i = 1; i < levels.length; i++) {
+    if (levels[i].y - levels[i - 1].y < MIN_SPACING) {
+      levels[i].y = levels[i - 1].y + MIN_SPACING;
+    }
+  }
+
+  const map = {};
+  levels.forEach(l => { map[l.n] = l.y; });
+  return map;
+}
+
+function linearEnergyToY(eV, H) {
+  const chartH = H - MARGIN_TOP - MARGIN_BOTTOM;
+  const t = (eV - E_MIN) / (E_MAX - E_MIN);
+  return MARGIN_TOP + chartH * (1 - t);
+}
+
 export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transition }) {
   const canvasRef = useRef(null);
   const animRef = useRef(null);
@@ -60,24 +94,15 @@ export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transiti
       alpha: Math.random() * 0.18 + 0.04,
     }));
 
-    const E_min = -14;
-    const E_max = 0.5;
-    const marginTop = 20;
-    const marginBottom = 30;
-    const chartH = H - marginTop - marginBottom;
+    // Precompute stable Y positions with minimum spacing — computed once, not per frame
+    const levelY = computeLevelYPositions(H);
     const leftX = 80;
     const rightX = W - 20;
-
-    const energyToY = (eV) => {
-      const t = (eV - E_min) / (E_max - E_min);
-      return marginTop + chartH * (1 - t);
-    };
 
     const draw = (timestamp) => {
       s.glowT += 0.035;
       s.photonPhase += 0.09;
 
-      // Animate arrow
       if (s.arrowStart !== null) {
         s.arrowProgress = Math.min((timestamp - s.arrowStart) / 650, 1);
         if (s.arrowProgress >= 1) {
@@ -87,7 +112,6 @@ export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transiti
         }
       }
 
-      // Animate photon wave moving right
       if (s.photonActive) {
         s.photonX += 2.8;
         if (s.photonX > rightX + 50) s.photonActive = false;
@@ -106,19 +130,20 @@ export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transiti
         ctx.fill();
       });
 
-      // Energy level lines
+      // Energy level lines using adjusted positions
       ENERGY_LEVELS.forEach(({ n, energy_eV }) => {
-        const y = energyToY(energy_eV);
+        const y = levelY[n];
         const isNF = n === s.nf;
         const isNI = s.transition && n === s.selectedNi;
 
-        // Glow halo on active levels
         if (isNF || isNI) {
           const glowAlpha = 0.18 + 0.12 * Math.sin(s.glowT + n * 1.3);
           ctx.beginPath();
           ctx.moveTo(leftX, y);
           ctx.lineTo(rightX, y);
-          ctx.strokeStyle = isNF ? `rgba(74,158,255,${glowAlpha * 2.2})` : `rgba(74,158,255,${glowAlpha})`;
+          ctx.strokeStyle = isNF
+            ? `rgba(74,158,255,${glowAlpha * 2.2})`
+            : `rgba(74,158,255,${glowAlpha})`;
           ctx.lineWidth = 7;
           ctx.stroke();
         }
@@ -136,6 +161,7 @@ export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transiti
         ctx.textBaseline = 'middle';
         ctx.fillText(`n=${n}`, leftX - 6, y);
 
+        // Energy value label — always shows real physical value
         ctx.fillStyle = '#4a5568';
         ctx.font = '10px Inter, system-ui';
         ctx.textAlign = 'left';
@@ -143,8 +169,8 @@ export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transiti
         ctx.fillText(`${energy_eV.toFixed(2)} eV`, rightX - 55, y - 8);
       });
 
-      // Ionization line
-      const ionY = energyToY(0);
+      // Ionization line — at true linear position for E=0
+      const ionY = linearEnergyToY(0, H);
       ctx.beginPath();
       ctx.moveTo(leftX, ionY);
       ctx.lineTo(rightX, ionY);
@@ -158,10 +184,10 @@ export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transiti
       ctx.textAlign = 'right';
       ctx.fillText('Ionización 0 eV', leftX - 6, ionY - 3);
 
-      // Transition arrow (animated from ni to nf)
+      // Animated transition arrow (ni → nf)
       if (s.transition && s.selectedNi > s.nf) {
-        const y_ni = energyToY(ENERGY_LEVELS[s.selectedNi - 1].energy_eV);
-        const y_nf = energyToY(ENERGY_LEVELS[s.nf - 1].energy_eV);
+        const y_ni = levelY[s.selectedNi];
+        const y_nf = levelY[s.nf];
         const arrowX = leftX + 40;
         const color = SERIES_COLORS[s.activeSeries] || '#4a9eff';
         const currentEnd = y_ni + (y_nf - y_ni) * s.arrowProgress;
@@ -174,7 +200,6 @@ export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transiti
         ctx.stroke();
 
         if (s.arrowProgress >= 1) {
-          // Arrow head
           ctx.beginPath();
           ctx.moveTo(arrowX, y_nf);
           ctx.lineTo(arrowX - 7, y_nf + 14);
@@ -183,7 +208,6 @@ export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transiti
           ctx.fillStyle = color;
           ctx.fill();
 
-          // Wavelength label
           ctx.fillStyle = color;
           ctx.font = 'bold 11px Inter, system-ui';
           ctx.textAlign = 'left';
@@ -193,9 +217,9 @@ export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transiti
         }
       }
 
-      // Emitted photon wave
+      // Emitted photon wave traveling right
       if (s.photonActive && s.transition) {
-        const y_nf = energyToY(ENERGY_LEVELS[s.nf - 1].energy_eV);
+        const y_nf = levelY[s.nf];
         const color = s.transition.color || SERIES_COLORS[s.activeSeries] || '#4a9eff';
         const waveLen = 18;
         const ampW = 5;
@@ -229,7 +253,6 @@ export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transiti
         const isSelected = s.transition && Math.abs(s.transition.lambda_nm - line.nm) < 5;
 
         if (isSelected) {
-          // Glow halo on selected spectral line
           const gAlpha = 0.45 + 0.3 * Math.sin(s.glowT * 2.2);
           ctx.beginPath();
           ctx.moveTo(lx, specY - 2);
