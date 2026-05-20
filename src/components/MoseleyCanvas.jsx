@@ -66,6 +66,26 @@ export default function MoseleyCanvas({ elementIndex, selectedElement }) {
     }));
 
     const draw = (timestamp) => {
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const C = {
+        bg:         isLight ? '#f0f4f8'  : '#0f172a',
+        bgPx:       isLight ? '217,119,6' : '245,158,11',
+        axes:       isLight ? '#d1d5db'  : '#1e3a5f',
+        axisLabel:  isLight ? '#6b7280'  : '#94a3b8',
+        lineTheory: isLight ? 'rgba(217,119,6,0.4)' : 'rgba(245,158,11,0.3)',
+        ptSel:      isLight ? '#d97706'  : '#f59e0b',
+        ptDim:      isLight ? '#2563eb'  : '#4a9eff',
+        ptLblSel:   isLight ? '#d97706'  : '#f59e0b',
+        ptLblDim:   isLight ? '#9ca3af'  : '#4a5568',
+        tickLabel:  isLight ? '#9ca3af'  : '#4a5568',
+        panelBg:    isLight ? '#f1f5f9'  : '#111827',
+        panelBord:  isLight ? '#e2e8f0'  : '#1e3a5f',
+        panelTitle: isLight ? '#374151'  : '#94a3b8',
+        infoSel:    isLight ? '#d97706'  : '#f59e0b',
+        infoDim:    isLight ? '#6b7280'  : '#94a3b8',
+        layerColors: { K: '#f59e0b', L: isLight ? '#2563eb' : '#4a9eff', M: '#7c3aed' },
+      };
+
       // Cascade entry on first frame
       if (!s.initialized) {
         s.initialized = true;
@@ -90,7 +110,7 @@ export default function MoseleyCanvas({ elementIndex, selectedElement }) {
         if (s.entryProgress >= 1) s.entryStart = null;
       }
 
-      ctx.fillStyle = '#0d1420';
+      ctx.fillStyle = C.bg;
       ctx.fillRect(0, 0, W, H);
 
       // Background particles (chart area only)
@@ -99,12 +119,12 @@ export default function MoseleyCanvas({ elementIndex, selectedElement }) {
         p.y = (p.y + p.vy + H) % H;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(245,158,11,${p.alpha})`;
+        ctx.fillStyle = `rgba(${C.bgPx},${isLight ? (p.alpha * 0.3).toFixed(2) : p.alpha})`;
         ctx.fill();
       });
 
       // Axes
-      ctx.strokeStyle = '#1e2d42';
+      ctx.strokeStyle = C.axes;
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(originX, originY);
@@ -115,8 +135,8 @@ export default function MoseleyCanvas({ elementIndex, selectedElement }) {
       ctx.lineTo(originX, originY);
       ctx.stroke();
 
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = '11px Inter, system-ui';
+      ctx.fillStyle = C.axisLabel;
+      ctx.font = '11px system-ui';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'alphabetic';
       ctx.fillText('Número atómico Z', originX + (chartW - originX) / 2, H - 6);
@@ -133,7 +153,7 @@ export default function MoseleyCanvas({ elementIndex, selectedElement }) {
         const y = toCanvasY(sqrtKAlphaFrequency(Z));
         Z === zMin ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
       }
-      ctx.strokeStyle = 'rgba(245,158,11,0.3)';
+      ctx.strokeStyle = C.lineTheory;
       ctx.lineWidth = 1.5;
       ctx.setLineDash([4, 3]);
       ctx.stroke();
@@ -161,7 +181,7 @@ export default function MoseleyCanvas({ elementIndex, selectedElement }) {
 
         ctx.beginPath();
         ctx.arc(x, y, isSelected ? 7 : 4, 0, Math.PI * 2);
-        ctx.fillStyle = isSelected ? '#f59e0b' : '#4a9eff';
+        ctx.fillStyle = isSelected ? C.ptSel : C.ptDim;
         ctx.globalAlpha = isSelected ? 1 : 0.72;
         ctx.fill();
         ctx.globalAlpha = 1;
@@ -170,7 +190,7 @@ export default function MoseleyCanvas({ elementIndex, selectedElement }) {
           const glowAlpha = 0.28 + 0.2 * Math.sin(s.flashT);
           ctx.beginPath();
           ctx.arc(x, y, 13, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(245,158,11,${glowAlpha})`;
+          ctx.strokeStyle = `rgba(${C.bgPx},${glowAlpha.toFixed(2)})`;
           ctx.lineWidth = 2.5;
           ctx.stroke();
           ctx.beginPath();
@@ -180,8 +200,8 @@ export default function MoseleyCanvas({ elementIndex, selectedElement }) {
           ctx.stroke();
         }
 
-        ctx.fillStyle = isSelected ? '#f59e0b' : '#4a5568';
-        ctx.font = `${isSelected ? 'bold ' : ''}10px Inter, system-ui`;
+        ctx.fillStyle = isSelected ? C.ptLblSel : C.ptLblDim;
+        ctx.font = `${isSelected ? 'bold ' : ''}10px system-ui`;
         ctx.textAlign = 'center';
         ctx.fillText(el.symbol, x, y - 10);
       });
@@ -193,11 +213,11 @@ export default function MoseleyCanvas({ elementIndex, selectedElement }) {
         ctx.beginPath();
         ctx.moveTo(x, originY);
         ctx.lineTo(x, originY + 4);
-        ctx.strokeStyle = '#4a5568';
+        ctx.strokeStyle = C.tickLabel;
         ctx.lineWidth = 1;
         ctx.stroke();
-        ctx.fillStyle = '#4a5568';
-        ctx.font = '9px Inter, system-ui';
+        ctx.fillStyle = C.tickLabel;
+        ctx.font = '9px system-ui';
         ctx.textAlign = 'center';
         ctx.fillText(Z, x, originY + 13);
       });
@@ -208,30 +228,29 @@ export default function MoseleyCanvas({ elementIndex, selectedElement }) {
       const panelCX = panelX + panelW / 2;
       const panelCY = 100;
 
-      ctx.fillStyle = '#111827';
+      ctx.fillStyle = C.panelBg;
       ctx.fillRect(panelX, 10, panelW, 200);
-      ctx.strokeStyle = '#1e2d42';
+      ctx.strokeStyle = C.panelBord;
       ctx.lineWidth = 1;
       ctx.strokeRect(panelX, 10, panelW, 200);
 
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = '10px Inter, system-ui';
+      ctx.fillStyle = C.panelTitle;
+      ctx.font = '10px system-ui';
       ctx.textAlign = 'center';
       ctx.fillText('Transición K-α', panelCX, 26);
 
       const radii = { K: 28, L: 50, M: 70 };
-      const layerColors = { K: '#f59e0b', L: '#4a9eff', M: '#7c3aed' };
 
       Object.entries(radii).forEach(([layer, r]) => {
         ctx.beginPath();
         ctx.arc(panelCX, panelCY + 20, r, 0, Math.PI * 2);
-        ctx.strokeStyle = layerColors[layer];
+        ctx.strokeStyle = C.layerColors[layer];
         ctx.lineWidth = 1;
         ctx.globalAlpha = 0.4;
         ctx.stroke();
         ctx.globalAlpha = 1;
-        ctx.fillStyle = layerColors[layer];
-        ctx.font = '10px Inter, system-ui';
+        ctx.fillStyle = C.layerColors[layer];
+        ctx.font = '10px system-ui';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(layer, panelCX + r + 8, panelCY + 20);
@@ -244,7 +263,7 @@ export default function MoseleyCanvas({ elementIndex, selectedElement }) {
       ctx.fillStyle = '#ef4444';
       ctx.fill();
       ctx.fillStyle = '#fff';
-      ctx.font = 'bold 8px Inter, system-ui';
+      ctx.font = 'bold 8px system-ui';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(s.selectedElement?.symbol || '', panelCX, panelCY + 20);
@@ -258,7 +277,7 @@ export default function MoseleyCanvas({ elementIndex, selectedElement }) {
         const ey = panelCY + 20 + r * Math.sin(s.orbitAngles[i]);
         ctx.beginPath();
         ctx.arc(ex, ey, 4, 0, Math.PI * 2);
-        ctx.fillStyle = layerColors[layer];
+        ctx.fillStyle = C.layerColors[layer];
         ctx.fill();
       });
 
@@ -275,24 +294,24 @@ export default function MoseleyCanvas({ elementIndex, selectedElement }) {
         ctx.beginPath();
         ctx.moveTo(lX, lY);
         ctx.lineTo(kX, kY);
-        ctx.strokeStyle = `rgba(245,158,11,${flashAlpha})`;
+        ctx.strokeStyle = `rgba(${C.bgPx},${flashAlpha.toFixed(2)})`;
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
         ctx.beginPath();
         ctx.arc(kX, kY, 6 * flashAlpha, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(245,158,11,${flashAlpha * 0.45})`;
+        ctx.fillStyle = `rgba(${C.bgPx},${(flashAlpha * 0.45).toFixed(2)})`;
         ctx.fill();
       }
 
       // Info text
       if (s.selectedElement) {
-        ctx.fillStyle = '#f59e0b';
-        ctx.font = '10px Inter, system-ui';
+        ctx.fillStyle = C.infoSel;
+        ctx.font = '10px system-ui';
         ctx.textAlign = 'center';
         ctx.fillText(`${s.selectedElement.E_eV?.toFixed(0) || ''} eV`, panelCX, panelCY + 115);
-        ctx.fillStyle = '#94a3b8';
-        ctx.font = '9px Inter, system-ui';
+        ctx.fillStyle = C.infoDim;
+        ctx.font = '9px system-ui';
         ctx.fillText(`Z = ${s.selectedElement.Z}`, panelCX, panelCY + 130);
         ctx.fillText(`${s.selectedElement.lambda_nm?.toFixed(3) || ''} nm`, panelCX, panelCY + 143);
       }

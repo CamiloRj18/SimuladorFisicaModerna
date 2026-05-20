@@ -100,6 +100,19 @@ export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transiti
     const rightX = W - 20;
 
     const draw = (timestamp) => {
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const C = {
+        bg:        isLight ? '#f0f4f8' : '#0f172a',
+        bgPx:      isLight ? '30,64,175' : '74,158,255',
+        levelDim:  isLight ? '#e2e8f0'  : '#1e3a5f',
+        levelHi:   isLight ? '#1e40af'  : '#4a9eff',
+        labelDim:  isLight ? '#6b7280'  : '#94a3b8',
+        labelHi:   isLight ? '#1e40af'  : '#4a9eff',
+        evLabel:   isLight ? '#9ca3af'  : '#4a5568',
+        ionLine:   isLight ? '#059669'  : '#10b981',
+        specLabel: isLight ? '#6b7280'  : '#4a5568',
+      };
+
       s.glowT += 0.035;
       s.photonPhase += 0.09;
 
@@ -117,7 +130,7 @@ export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transiti
         if (s.photonX > rightX + 50) s.photonActive = false;
       }
 
-      ctx.fillStyle = '#0d1420';
+      ctx.fillStyle = C.bg;
       ctx.fillRect(0, 0, W, H);
 
       // Background particles
@@ -126,7 +139,7 @@ export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transiti
         p.y = (p.y + p.vy + H) % H;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(74,158,255,${p.alpha})`;
+        ctx.fillStyle = `rgba(${C.bgPx},${isLight ? (p.alpha * 0.3).toFixed(2) : p.alpha})`;
         ctx.fill();
       });
 
@@ -142,8 +155,8 @@ export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transiti
           ctx.moveTo(leftX, y);
           ctx.lineTo(rightX, y);
           ctx.strokeStyle = isNF
-            ? `rgba(74,158,255,${glowAlpha * 2.2})`
-            : `rgba(74,158,255,${glowAlpha})`;
+            ? `rgba(${C.bgPx},${(glowAlpha * 2.2).toFixed(2)})`
+            : `rgba(${C.bgPx},${glowAlpha.toFixed(2)})`;
           ctx.lineWidth = 7;
           ctx.stroke();
         }
@@ -151,19 +164,18 @@ export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transiti
         ctx.beginPath();
         ctx.moveTo(leftX, y);
         ctx.lineTo(rightX, y);
-        ctx.strokeStyle = isNF ? '#4a9eff' : '#1e2d42';
+        ctx.strokeStyle = isNF ? C.levelHi : C.levelDim;
         ctx.lineWidth = isNF ? 2 : 1;
         ctx.stroke();
 
-        ctx.fillStyle = isNF ? '#4a9eff' : '#94a3b8';
-        ctx.font = `${isNF ? 'bold ' : ''}12px Inter, system-ui`;
+        ctx.fillStyle = isNF ? C.labelHi : C.labelDim;
+        ctx.font = `${isNF ? 'bold ' : ''}12px system-ui`;
         ctx.textAlign = 'right';
         ctx.textBaseline = 'middle';
         ctx.fillText(`n=${n}`, leftX - 6, y);
 
-        // Energy value label — always shows real physical value
-        ctx.fillStyle = '#4a5568';
-        ctx.font = '10px Inter, system-ui';
+        ctx.fillStyle = C.evLabel;
+        ctx.font = '10px system-ui';
         ctx.textAlign = 'left';
         ctx.textBaseline = 'alphabetic';
         ctx.fillText(`${energy_eV.toFixed(2)} eV`, rightX - 55, y - 8);
@@ -174,13 +186,13 @@ export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transiti
       ctx.beginPath();
       ctx.moveTo(leftX, ionY);
       ctx.lineTo(rightX, ionY);
-      ctx.strokeStyle = '#10b981';
+      ctx.strokeStyle = C.ionLine;
       ctx.lineWidth = 1;
       ctx.setLineDash([4, 4]);
       ctx.stroke();
       ctx.setLineDash([]);
-      ctx.fillStyle = '#10b981';
-      ctx.font = '10px Inter, system-ui';
+      ctx.fillStyle = C.ionLine;
+      ctx.font = '10px system-ui';
       ctx.textAlign = 'right';
       ctx.fillText('Ionización 0 eV', leftX - 6, ionY - 3);
 
@@ -189,7 +201,7 @@ export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transiti
         const y_ni = levelY[s.selectedNi];
         const y_nf = levelY[s.nf];
         const arrowX = leftX + 40;
-        const color = SERIES_COLORS[s.activeSeries] || '#4a9eff';
+        const color = SERIES_COLORS[s.activeSeries] || C.levelHi;
         const currentEnd = y_ni + (y_nf - y_ni) * s.arrowProgress;
 
         ctx.beginPath();
@@ -209,7 +221,7 @@ export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transiti
           ctx.fill();
 
           ctx.fillStyle = color;
-          ctx.font = 'bold 11px Inter, system-ui';
+          ctx.font = 'bold 11px system-ui';
           ctx.textAlign = 'left';
           ctx.textBaseline = 'middle';
           ctx.fillText(`${s.transition.lambda_nm.toFixed(1)} nm`, arrowX + 10, (y_ni + y_nf) / 2);
@@ -220,7 +232,7 @@ export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transiti
       // Emitted photon wave traveling right
       if (s.photonActive && s.transition) {
         const y_nf = levelY[s.nf];
-        const color = s.transition.color || SERIES_COLORS[s.activeSeries] || '#4a9eff';
+        const color = s.transition.color || SERIES_COLORS[s.activeSeries] || C.levelHi;
         const waveLen = 18;
         const ampW = 5;
         const startX = leftX + 40;
@@ -272,13 +284,13 @@ export default function HidrogenoCanvas({ activeSeries, selectedNi, nf, transiti
         ctx.stroke();
 
         ctx.fillStyle = line.color;
-        ctx.font = '9px Inter, system-ui';
+        ctx.font = '9px system-ui';
         ctx.textAlign = 'center';
         ctx.fillText(line.name, lx, specY - 4);
       });
 
-      ctx.fillStyle = '#4a5568';
-      ctx.font = '9px Inter, system-ui';
+      ctx.fillStyle = C.specLabel;
+      ctx.font = '9px system-ui';
       ctx.textAlign = 'left';
       ctx.fillText('Serie Balmer — espectro visible', specX, specY - 14);
 

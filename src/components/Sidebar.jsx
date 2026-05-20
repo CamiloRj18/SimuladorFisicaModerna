@@ -1,4 +1,5 @@
 import styles from './Sidebar.module.css';
+import { useTheme } from '../context/ThemeContext';
 
 const MODULES = [
   { id: 'compton',   label: 'Efecto Compton',          shortLabel: 'Compton',    sub: 'Dispersión de fotones' },
@@ -9,6 +10,8 @@ const MODULES = [
 ];
 
 export default function Sidebar({ active, onSelect }) {
+  const { theme, changeTheme } = useTheme();
+
   return (
     <aside className={styles.sidebar}>
       <div className={styles.logo}>
@@ -30,7 +33,17 @@ export default function Sidebar({ active, onSelect }) {
         ))}
       </nav>
       <div className={styles.footer}>
-        Dualidad onda-partícula
+        <div className={styles.themeSection}>
+          <div className={styles.themeLabel}>Apariencia</div>
+          <select
+            className={styles.themeSelect}
+            value={theme}
+            onChange={(e) => changeTheme(e.target.value)}
+          >
+            <option value="dark">Modo oscuro</option>
+            <option value="light">Modo claro</option>
+          </select>
+        </div>
       </div>
     </aside>
   );

@@ -66,6 +66,23 @@ export default function DeBroglieCanvas({ beta, lambda_pm, particleLabel }) {
     }));
 
     const draw = (timestamp) => {
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const C = {
+        bg:       isLight ? '#f0f4f8' : '#0f172a',
+        bgPx:     isLight ? '99,102,241' : '124,58,237',
+        axis:     isLight ? '#d1d5db'  : '#1e3a5f',
+        envelope: isLight ? 'rgba(109,40,217,0.2)' : 'rgba(124,58,237,0.18)',
+        wave:     isLight ? '#6d28d9'  : '#7c3aed',
+        pFill:    isLight ? '#6d28d9'  : '#7c3aed',
+        pStroke:  isLight ? '#8b5cf6'  : '#a78bfa',
+        pText:    isLight ? '#111827'  : '#e2e8f0',
+        barBg:    isLight ? '#e2e8f0'  : '#111827',
+        barBord:  isLight ? '#d1d5db'  : '#1e3a5f',
+        barFill:  isLight ? '#6d28d9'  : '#7c3aed',
+        label:    isLight ? '#6b7280'  : '#94a3b8',
+        betaLbl:  isLight ? '#1e40af'  : '#4a9eff',
+      };
+
       s.phase += 0.055;
 
       // Animate cycles/bar transition
@@ -81,7 +98,7 @@ export default function DeBroglieCanvas({ beta, lambda_pm, particleLabel }) {
         }
       }
 
-      ctx.fillStyle = '#0d1420';
+      ctx.fillStyle = C.bg;
       ctx.fillRect(0, 0, W, H);
 
       // Background particles
@@ -90,7 +107,7 @@ export default function DeBroglieCanvas({ beta, lambda_pm, particleLabel }) {
         p.y = (p.y + p.vy + H) % H;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(124,58,237,${p.alpha})`;
+        ctx.fillStyle = `rgba(${C.bgPx},${isLight ? (p.alpha * 0.3).toFixed(2) : p.alpha})`;
         ctx.fill();
       });
 
@@ -101,7 +118,7 @@ export default function DeBroglieCanvas({ beta, lambda_pm, particleLabel }) {
       ctx.beginPath();
       ctx.moveTo(20, midY);
       ctx.lineTo(W - 20, midY);
-      ctx.strokeStyle = '#1e2d42';
+      ctx.strokeStyle = C.axis;
       ctx.lineWidth = 1;
       ctx.stroke();
 
@@ -114,7 +131,7 @@ export default function DeBroglieCanvas({ beta, lambda_pm, particleLabel }) {
           const y = midY - sign * env;
           x === 20 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
         }
-        ctx.strokeStyle = 'rgba(124,58,237,0.18)';
+        ctx.strokeStyle = C.envelope;
         ctx.lineWidth = 1;
         ctx.setLineDash([4, 4]);
         ctx.stroke();
@@ -128,7 +145,7 @@ export default function DeBroglieCanvas({ beta, lambda_pm, particleLabel }) {
         const y = midY - amp * Math.sin(tx * Math.PI * 2 * s.displayCycles + s.phase);
         x === 20 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
       }
-      ctx.strokeStyle = '#7c3aed';
+      ctx.strokeStyle = C.wave;
       ctx.lineWidth = 2.5;
       ctx.stroke();
 
@@ -138,16 +155,16 @@ export default function DeBroglieCanvas({ beta, lambda_pm, particleLabel }) {
 
       ctx.beginPath();
       ctx.arc(px, waveY, 10, 0, Math.PI * 2);
-      ctx.fillStyle = '#7c3aed';
+      ctx.fillStyle = C.pFill;
       ctx.globalAlpha = 0.9;
       ctx.fill();
       ctx.globalAlpha = 1;
-      ctx.strokeStyle = '#a78bfa';
+      ctx.strokeStyle = C.pStroke;
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
-      ctx.fillStyle = '#e2e8f0';
-      ctx.font = 'bold 10px Inter, system-ui';
+      ctx.fillStyle = C.pText;
+      ctx.font = 'bold 10px system-ui';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(s.particleLabel, px, waveY);
@@ -158,25 +175,25 @@ export default function DeBroglieCanvas({ beta, lambda_pm, particleLabel }) {
       const barW = W - 60;
       const barX = 30;
 
-      ctx.fillStyle = '#111827';
+      ctx.fillStyle = C.barBg;
       ctx.fillRect(barX, barY - 10, barW, 20);
-      ctx.strokeStyle = '#1e2d42';
+      ctx.strokeStyle = C.barBord;
       ctx.lineWidth = 1;
       ctx.strokeRect(barX, barY - 10, barW, 20);
 
       const segLen = Math.min(barW, Math.max(4, s.displayBar * barW));
-      ctx.fillStyle = '#7c3aed';
+      ctx.fillStyle = C.barFill;
       ctx.globalAlpha = 0.7;
       ctx.fillRect(barX, barY - 10, segLen, 20);
       ctx.globalAlpha = 1;
 
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = '10px Inter, system-ui';
+      ctx.fillStyle = C.label;
+      ctx.font = '10px system-ui';
       ctx.textAlign = 'left';
       ctx.fillText('λ relativa', barX, barY - 16);
 
-      ctx.fillStyle = '#4a9eff';
-      ctx.font = '12px Inter, system-ui';
+      ctx.fillStyle = C.betaLbl;
+      ctx.font = '12px system-ui';
       ctx.textAlign = 'center';
       ctx.fillText(`β = ${s.beta.toFixed(3)}c`, W / 2, H - 12);
 

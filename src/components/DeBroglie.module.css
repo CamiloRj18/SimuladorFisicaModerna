@@ -22,6 +22,7 @@
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   padding: 16px;
+  box-shadow: var(--card-shadow);
 }
 
 .controls {
@@ -32,6 +33,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  box-shadow: var(--card-shadow);
 }
 
 .controlRow {
@@ -68,7 +70,7 @@
 .particleBtn {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
+  border-radius: 6px;
   color: var(--text-secondary);
   font-size: 12px;
   font-weight: 500;

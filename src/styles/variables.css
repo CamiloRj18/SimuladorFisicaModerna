@@ -1,33 +1,61 @@
 :root {
-  /* Fondos */
-  --bg-main:      #0a0e1a;
-  --bg-card:      #0d1420;
+  /* Fondos — dark mode (azul petróleo profundo) */
+  --bg-main:      #0a0f1e;
+  --bg-card:      #0f172a;
   --bg-secondary: #111827;
-  --bg-hover:     #1a2235;
+  --bg-hover:     #1e2a47;
+  --bg-active:    #1e1b4b;
 
   /* Colores de acento */
-  --color-primary: #4a9eff;
+  --color-primary: #6366f1;
   --color-cyan:    #00d4ff;
   --color-purple:  #7c3aed;
   --color-gold:    #f59e0b;
-  --color-green:   #10b981;
+  --color-green:   #34d399;
   --color-red:     #ef4444;
 
   /* Texto */
-  --text-primary:   #e2e8f0;
+  --text-primary:   #f1f5f9;
   --text-secondary: #94a3b8;
-  --text-tertiary:  #4a5568;
+  --text-tertiary:  #475569;
 
   /* Bordes */
-  --border-color:   #1e2d42;
-  --border-active:  #2a3f5f;
+  --border-color:   #1e3a5f;
+  --border-active:  #2d4a7a;
+
+  /* Sombra de tarjeta */
+  --card-shadow: none;
 
   /* Tipografía */
-  --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-main: 'Outfit', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
   /* Espaciado */
   --sidebar-width: 220px;
   --panel-padding: 20px;
   --border-radius: 6px;
+}
+
+[data-theme="light"] {
+  --bg-main:      #f8fafc;
+  --bg-card:      #ffffff;
+  --bg-secondary: #f1f5f9;
+  --bg-hover:     #e2e8f0;
+  --bg-active:    #eef2ff;
+
+  --color-primary: #4f46e5;
+  --color-cyan:    #0891b2;
+  --color-purple:  #7c3aed;
+  --color-gold:    #d97706;
+  --color-green:   #0f766e;
+  --color-red:     #dc2626;
+
+  --text-primary:   #0f172a;
+  --text-secondary: #4a5568;
+  --text-tertiary:  #64748b;
+
+  --border-color:   #e2e8f0;
+  --border-active:  #cbd5e0;
+
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }

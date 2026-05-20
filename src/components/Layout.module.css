@@ -16,6 +16,15 @@
   margin-bottom: 20px;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pageTitleGroup {
+  flex: 1;
+  min-width: 0;
 }
 
 .pageTitle {
@@ -31,6 +40,10 @@
   margin-top: 4px;
 }
 
+.themeMobile {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .main {
     margin-left: 0;
@@ -44,5 +57,13 @@
 
   .pageSubtitle {
     font-size: 11px;
+  }
+
+  .themeMobile {
+    display: block;
+    flex-shrink: 0;
+    font-size: 12px;
+    padding: 6px 24px 6px 8px;
+    align-self: center;
   }
 }

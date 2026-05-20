@@ -6,6 +6,7 @@ import Hidrogeno from './components/Hidrogeno.jsx';
 import Moseley from './components/Moseley.jsx';
 import Manual from './components/Manual.jsx';
 import styles from './components/Layout.module.css';
+import { useTheme } from './context/ThemeContext';
 
 const MODULE_META = {
   compton:   { title: 'Efecto Compton',                   subtitle: 'Dispersión de fotones por electrones — A.H. Compton, 1923' },
@@ -19,6 +20,7 @@ const MODULES = { compton: Compton, debroglie: DeBroglie, hidrogeno: Hidrogeno, 
 
 export default function App() {
   const [active, setActive] = useState('compton');
+  const { theme, changeTheme } = useTheme();
   const Module = MODULES[active];
   const meta = MODULE_META[active];
 
@@ -27,8 +29,18 @@ export default function App() {
       <Sidebar active={active} onSelect={setActive} />
       <main className={styles.main}>
         <div className={styles.pageHeader}>
-          <div className={styles.pageTitle}>{meta.title}</div>
-          <div className={styles.pageSubtitle}>{meta.subtitle}</div>
+          <div className={styles.pageTitleGroup}>
+            <div className={styles.pageTitle}>{meta.title}</div>
+            <div className={styles.pageSubtitle}>{meta.subtitle}</div>
+          </div>
+          <select
+            className={styles.themeMobile}
+            value={theme}
+            onChange={(e) => changeTheme(e.target.value)}
+          >
+            <option value="dark">Oscuro</option>
+            <option value="light">Claro</option>
+          </select>
         </div>
         <Module />
       </main>

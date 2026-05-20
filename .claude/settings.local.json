@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(npx vite *)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\CAMI\\\\Desktop\\\\SimuladorFisicaModerna\" -Recurse -File)",
+      "Bash(Select-Object FullName)",
+      "Bash(Sort-Object FullName)"
     ]
   }
 }
